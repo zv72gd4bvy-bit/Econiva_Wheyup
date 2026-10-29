@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EcoNiva WHEY UP | QR-паспорт & EcoTrack</title>
+    <style>
+        :root {
+            --green-dark: #006837;
+            --green-mid: #16a34a;
+            --green-light: #e6f4ea;
+            --amber: #d97706;
+            --amber-light: #fef3c7;
+            --bg: #f4f7f5;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; }
+        .app-container { max-width: 440px; margin: 0 auto; padding: 16px; }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--green-dark) 0%, #0d8a4e 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 104, 55, 0.18);
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .badge-verified {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .header h1 { font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 4px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+        
+        /* SKU Selector */
+        .sku-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .sku-tab {
+            flex: 1;
+            padding: 10px 8px;
+            border-radius: 12px;
+            border: 2px solid #cbd5e1;
+            background: white;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sku-tab.active-energy { border-color: #d97706; background: #fffbeb; color: #b45309; }
+        .sku-tab.active-isotonic { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+        .sku-tab.active-focus { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
+
+        /* Card general */
+        .card {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+        }
+        .card-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--green-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* EcoTrack Counter */
+        .ecotrack-card {
+            background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+            border: 2px solid var(--green-mid);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .metric-box {
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            border: 1px solid #bbf7d0;
+            text-align: center;
+        }
+        .metric-val {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--green-dark);
+            line-height: 1.1;
+        }
+        .metric-lbl {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .btn-main {
+            background: var(--green-dark);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 104, 55, 0.25);
+            transition: transform 0.1s;
+        }
+        .btn-main:active { transform: scale(0.98); }
+        .btn-secondary {
+            background: var(--amber-light);
+            color: #92400e;
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            padding: 11px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-reset {
+            background: transparent;
+            color: var(--muted);
+            border: none;
+            font-size: 11px;
+            text-decoration: underline;
+            margin-top: 6px;
+            cursor: pointer;
+        }
+
+        /* Traceability Timeline */
+        .timeline-item {
+            display: flex;
+            gap: 12px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .timeline-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-weight: 800;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .step-body h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .step-body p { font-size: 12px; color: var(--muted); line-height: 1.35; }
+
+        /* LCA Methodology Accordion */
+        .lca-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 7px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .lca-row.total {
+            font-weight: 800;
+            color: var(--green-dark);
+            border-top: 2px solid #cbd5e1;
+            border-bottom: none;
+            padding-top: 10px;
+            font-size: 13px;
+        }
+        .disclaimer {
+            font-size: 10.5px;
+            color: var(--muted);
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            line-height: 1.4;
+            border-left: 3px solid var(--amber);
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f172a;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+            z-index: 100;
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Header -->
+    <div class="header">
+        <div class="badge-verified">✓ ЦИФРОВОЙ ПАСПОРТ ПАРТИИ № WU-01</div>
+        <h1 id="sku-title">ЭкоНива WHEY UP • ENERGY</h1>
+        <p id="sku-sub">Башкирский мёд, липовый цвет и овес (330 мл)</p>
+    </div>
+
+    <!-- SKU Switcher -->
+    <div class="sku-tabs">
+        <div class="sku-tab active-energy" onclick="selectSku('energy')">🍯 ENERGY</div>
+        <div class="sku-tab" onclick="selectSku('isotonic')">🌿 ISOTONIC</div>
+        <div class="sku-tab" onclick="selectSku('focus')">🧡 FOCUS</div>
+    </div>
+
+    <!-- Interactive EcoTrack Counter (LocalStorage) -->
+    <div class="card ecotrack-card">
+        <div class="card-title">
+            <span>🌱 Ваш личный счётчик EcoTrack</span>
+            <span style="font-size:11px; color:#15803d; background:#dcfce7; padding:2px 8px; border-radius:99px;">На устройстве</span>
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-val" id="val-bottles">1</div>
+                <div class="metric-lbl">Выпито бутылок (330 мл)</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" id="val-co2">128,4 г</div>
+                <div class="metric-lbl">Снижение следа CO₂-eq*</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" id="val-water">3,0 л</div>
+                <div class="metric-lbl">Сэкономлено воды (CIP)</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" id="val-rpet">0 / 1</div>
+                <div class="metric-lbl">Сдано тары rPET (Кешбэк)</div>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-main" onclick="addBottle()">+ Засчитать бутылку (-128,4 г CO₂-eq)</button>
+            <button class="btn-secondary" onclick="returnBottle()">♻ Сдать rPET по перфорации (+5 бонусов)</button>
+            <button class="btn-reset" onclick="resetTracker()">Сбросить демо-счётчик (для жюри)</button>
+        </div>
+    </div>
+
+    <!-- Farm to Bottle Traceability -->
+    <div class="card">
+        <div class="card-title">📍 Путь от поля до бутылки</div>
+        <div class="timeline-item">
+            <div class="step-num">1</div>
+            <div class="step-body">
+                <h4>Молочная ферма: ЖК «Северная Нива»</h4>
+                <p>Плечо доставки сырого молока до завода: 62 км (58 минут в пути — строго по правилу ≤ 1,5 часа).</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="step-num">2</div>
+            <div class="step-body">
+                <h4 id="field-title">Зерновая база: Голозерный овес ГК</h4>
+                <p id="field-desc">Поля в Республике Башкортостан («ЭкоНива-Семена»). Паровая экструзия +85 °C, микро-помол &lt;0,3 мм.</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="step-num">3</div>
+            <div class="step-body">
+                <h4>Завод розлива: ООО «Агропроминвест»</h4>
+                <p>г. Бугуруслан (Оренбургская обл.). Холодная UF-фильтрация сыворотки (+10 °C) без сушки. Розлив ESL Ultra Clean.</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="step-num">4</div>
+            <div class="step-body">
+                <h4>Партия и срок годности (ТР ТС 022/2011)</h4>
+                <p>Изготовлено: 29.10.2026 | Годен до: 28.11.2026 (30 суток при +2...+6 °C). Доставка в Уфу: 320 км (Р-240).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transparent LCA Calculation Methodology -->
+    <div class="card">
+        <div class="card-title">📊 Методика расчёта следа 1 бутылки</div>
+        <div class="lca-row">
+            <span>Отказ от распылительной сушки (1 л сыворотки):</span>
+            <strong style="color:#15803d;">-95,0 г CO₂-eq</strong>
+        </div>
+        <div class="lca-row">
+            <span>Вторичная преформа 100% rPET (20 г vs vPET):</span>
+            <strong style="color:#15803d;">-37,8 г CO₂-eq</strong>
+        </div>
+        <div class="lca-row">
+            <span>Экструзия и логистика овса (учёт LCA):</span>
+            <strong style="color:#b45309;">+4,4 г CO₂-eq</strong>
+        </div>
+        <div class="lca-row total">
+            <span>Чистое снижение на 1 бутылку (-64%):</span>
+            <span>-128,4 г CO₂-eq</span>
+        </div>
+        <div class="lca-row">
+            <span>Возврат пермеата (723 мл) в цикл CIP-мойки:</span>
+            <strong style="color:#0369a1;">+3,0 л пресной воды</strong>
+        </div>
+        <div class="disclaimer">
+            <strong>*Методологическое примечание (ISO 14040 / 14044):</strong> Показатель отражает расчётное предотвращение выбросов (Avoided Emissions) по сравнению с базовым отраслевым сценарием (распылительная сушка сыворотки 0,110 кг CO₂/л по ИТС 44-2023 и первичный пластик vPET 2,54 кг CO₂/кг по Ecoinvent v3.9). На годовой пилот (4,818 млн бут.) суммарный эффект составляет <strong>-618,4 т CO₂-eq</strong> и <strong>14 454 м³</strong> воды.
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast">Счётчик обновлён!</div>
+
+<script>
+    const CO2_PER_BOTTLE_G = 128.35; // 618,400,000 g / 4,818,000 bottles
+    const WATER_PER_BOTTLE_L = 3.0;  // 14,454,000 L / 4,818,000 bottles
+
+    const skuData = {
+        energy: {
+            title: "ЭкоНива WHEY UP • ENERGY",
+            sub: "Башкирский мёд, липовый цвет и овес (330 мл)",
+            field: "Поля в Республике Башкортостан («ЭкоНива-Семена»). Дистиллят башкирского мёда и экстракт липы."
+        },
+        isotonic: {
+            title: "ЭкоНива WHEY UP • ISOTONIC",
+            sub: "Башкирские травы, лайм и зелёный злак (330 мл)",
+            field: "Поля в Республике Башкортостан («Северная Нива»). Чабрец, мята, мелисса и натуральный сок лайма."
+        },
+        focus: {
+            title: "ЭкоНива WHEY UP • FOCUS",
+            sub: "Уральская облепиха, имбирь и мультизлак (330 мл)",
+            field: "Поля Башкирии и Оренбуржья («ЭкоНива-Семена»). Уральская облепиха и натуральный экстракт имбиря."
+        }
+    };
+
+    function getState() {
+        const saved = localStorage.getItem('ekoniva_ecotrack_v1');
+        if (saved) {
+            try { return JSON.parse(saved); } catch(e) {}
+        }
+        return { bottles: 1, returned: 0, points: 0 };
+    }
+
+    function saveState(state) {
+        localStorage.setItem('ekoniva_ecotrack_v1', JSON.stringify(state));
+        render(state);
+    }
+
+    function render(state) {
+        document.getElementById('val-bottles').innerText = state.bottles;
+        const totalCo2 = state.bottles * CO2_PER_BOTTLE_G;
+        document.getElementById('val-co2').innerText = totalCo2 >= 1000 
+            ? (totalCo2 / 1000).toFixed(2).replace('.', ',') + ' кг'
+            : totalCo2.toFixed(1).replace('.', ',') + ' г';
+        const totalWater = state.bottles * WATER_PER_BOTTLE_L;
+        document.getElementById('val-water').innerText = totalWater.toFixed(1).replace('.', ',') + ' л';
+        document.getElementById('val-rpet').innerText = state.returned + ' (' + state.points + ' б.)';
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function addBottle() {
+        const s = getState();
+        s.bottles += 1;
+        saveState(s);
+        showToast('+1 бутылка: -128,4 г CO₂ и +3 л воды!');
+    }
+
+    function returnBottle() {
+        const s = getState();
+        if (s.returned < s.bottles) {
+            s.returned += 1;
+            s.points += 5;
+            saveState(s);
+            showToast('♻ Бутылка rPET сдана! Начислено +5 эко-баллов');
+        } else {
+            showToast('Все выпитые бутылки уже сданы в фандомат!');
+        }
+    }
+
+    function resetTracker() {
+        saveState({ bottles: 1, returned: 0, points: 0 });
+        showToast('Счётчик сброшен к 1-й бутылке');
+    }
+
+    function selectSku(sku) {
+        const tabs = document.querySelectorAll('.sku-tab');
+        tabs.forEach(t => t.className = 'sku-tab');
+        if (sku === 'energy') tabs[0].classList.add('active-energy');
+        if (sku === 'isotonic') tabs[1].classList.add('active-isotonic');
+        if (sku === 'focus') tabs[2].classList.add('active-focus');
+
+        document.getElementById('sku-title').innerText = skuData[sku].title;
+        document.getElementById('sku-sub').innerText = skuData[sku].sub;
+        document.getElementById('field-desc').innerText = skuData[sku].field;
+    }
+
+    // Init on load
+    render(getState());
+</script>
+</body>
+</html>
